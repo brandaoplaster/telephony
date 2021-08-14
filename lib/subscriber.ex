@@ -17,9 +17,29 @@ defmodule Subscriber do
     end
   end
 
-  def search_subscriber(number) do
-    (read(:prepaid) ++ read(:postpaid))
-    |> Enum.find(fn subscriber -> subscriber.number == number end)
+  def search_subscriber(number, key \\ :all) do
+    search(number, key)
+  end
+
+  def prepaid_subscribers, do: read(:prepaid)
+
+  def postpaid_subscribers, do: read(:postpaid)
+
+  def all_subscribers, do: read(:prepaid) ++ read(:postpaid)
+
+  defp search(number, :prepaid) do
+    prepaid_subscribers()
+    |> Enum.find(all_subscribers(), &(&1.number == number))
+  end
+
+  defp search(number, :postpaid) do
+    postpaid_subscribers()
+    |> Enum.find(all_subscribers(), &(&1.number == number))
+  end
+
+  defp search(number, :all) do
+    all_subscribers()
+    |> Enum.find(all_subscribers(), &(&1.number == number))
   end
 
   defp write(subscriber_list, plan) do
