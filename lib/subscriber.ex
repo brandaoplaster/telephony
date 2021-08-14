@@ -1,20 +1,20 @@
 defmodule Subscriber do
-  defstruct name: nil, number: nil, cpf: nil
+  defstruct name: nil, number: nil, cpf: nil, plan: nil
 
-  @subscriber "subscriber.txt"
+  @subscriber %{:prepaid => "prepaid.txt", :postpaid => "postpaid.txt"}
 
-  def register(name, number, cpf) do
-    read() ++ [%__MODULE__{name: name, number: number, cpf: cpf}]
+  def register(name, number, cpf, plan) do
+    read(plan) ++ [%__MODULE__{name: name, number: number, cpf: cpf, plan: plan}]
     |> :erlang.term_to_binary()
-    |> write()
+    |> write(plan)
   end
 
-  defp write(subscriber_list) do
-    File.write(@subscriber, subscriber_list)
+  defp write(subscriber_list, plan) do
+    File.write(@subscriber[plan], subscriber_list)
   end
 
-  defp read() do
-    {:ok, subscriber} = File.read(@subscriber)
+  defp read(plan) do
+    {:ok, subscriber} = File.read(@subscriber[plan])
 
     subscriber
     |> :erlang.binary_to_term()
