@@ -32,4 +32,7 @@ erl_crash.dump
 .history
 .ionide
 
+postpaid.txt
+prepaid.txt
+
 # End of https://www.toptal.com/developers/gitignore/api/elixir,visualstudiocode
