@@ -40,9 +40,13 @@ defmodule Subscriber do
   end
 
   defp read(plan) do
-    {:ok, subscriber} = File.read(@subscriber[plan])
+    case File.read(@subscriber[plan]) do
+      {:ok, subscriber} ->
+        subscriber
+        |> :erlang.binary_to_term()
 
-    subscriber
-    |> :erlang.binary_to_term()
+      {:error, :ennoent} ->
+        {:error, "Invalid file"}
+    end
   end
 end
