@@ -27,20 +27,13 @@ defmodule Subscriber do
 
   def all_subscribers, do: read(:prepaid) ++ read(:postpaid)
 
-  defp search(number, :prepaid) do
-    prepaid_subscribers()
-    |> Enum.find(all_subscribers(), &(&1.number == number))
-  end
+  defp search(number, :prepaid), do: subscribers_filter(prepaid_subscribers(), number)
 
-  defp search(number, :postpaid) do
-    postpaid_subscribers()
-    |> Enum.find(all_subscribers(), &(&1.number == number))
-  end
+  defp search(number, :postpaid), do: subscribers_filter(postpaid_subscribers(), number)
 
-  defp search(number, :all) do
-    all_subscribers()
-    |> Enum.find(all_subscribers(), &(&1.number == number))
-  end
+  defp search(number, :all), do: subscribers_filter(all_subscribers(), number)
+
+  defp subscribers_filter(list, number), do: Enum.find(list, &(&1.number == number))
 
   defp write(subscriber_list, plan) do
     File.write(@subscriber[plan], subscriber_list)
