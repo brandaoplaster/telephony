@@ -3,12 +3,16 @@ defmodule Subscriber do
 
   @subscriber %{:prepaid => "prepaid.txt", :postpaid => "postpaid.txt"}
 
-  def register(name, number, cpf, plan \\ :prepaid) do
+  def register(name, number, cpf, :prepaid), do: register(name, number, cpf, %Prepaid{})
+  def register(name, number, cpf, :postpaid), do: register(name, number, cpf, %Postpaid{})
+
+  def register(name, number, cpf, plan) do
     case search_subscriber(number) do
       nil ->
-        (read(plan) ++ [%__MODULE__{name: name, number: number, cpf: cpf, plan: plan}])
+        subscriber = %__MODULE__{name: name, number: number, cpf: cpf, plan: plan}
+        (read(get_plan(subscriber)) ++ [subscriber])
         |> :erlang.term_to_binary()
-        |> write(plan)
+        |> write(get_plan(subscriber))
 
         {:ok, "#{name} subscriber successfully registered"}
 
@@ -38,6 +42,13 @@ defmodule Subscriber do
   def postpaid_subscribers, do: read(:postpaid)
 
   def all_subscribers, do: read(:prepaid) ++ read(:postpaid)
+
+  defp get_plan(subscriber) do
+    case subscriber.plan.__struct__ == Prepaid do
+      true -> :prepaid
+      false -> :postpaid
+    end
+  end
 
   defp search(number, :prepaid), do: subscribers_filter(prepaid_subscribers(), number)
 
