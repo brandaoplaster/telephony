@@ -21,6 +21,18 @@ defmodule Subscriber do
     search(number, key)
   end
 
+  def delete(number) do
+    subscriber = search_subscriber(number)
+
+    subscriber_deleted =
+      all_subscribers()
+      |> List.delete(subscriber)
+      |> :erlang.term_to_binary()
+      |> write(subscriber.plan)
+
+    {subscriber_deleted, "#{subscriber.name} subscriber successfully deleted!"}
+  end
+
   def prepaid_subscribers, do: read(:prepaid)
 
   def postpaid_subscribers, do: read(:postpaid)
