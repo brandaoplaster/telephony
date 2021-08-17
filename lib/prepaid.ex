@@ -1,5 +1,4 @@
 defmodule Prepaid do
-
   defstruct credits: 0, recharges: []
 
   @minute_price 1.45
@@ -10,9 +9,14 @@ defmodule Prepaid do
     subscriber = Subscriber.search_subscriber(number, :prepaid)
 
     cond do
-      cost <= 10 -> {:ok, "Your call cost #{cost}"}
-      true -> {:error, "You don't have credits to make this call, make a recharge!"}
-    end
+      cost <= subscriber.plan ->
+        plan = subscriber.plan
+        plan = %__MODULE__{plan | credits: plan.credits - cost}
+        subscriber = %Subscriber{subscriber | plan: plan}
+        {:ok, "Your call cost #{cost}, and you have #{plan.credits} credits"}
 
+      true ->
+        {:error, "You don't have credits to make this call, make a recharge!"}
+    end
   end
 end
