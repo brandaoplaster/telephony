@@ -1,5 +1,5 @@
 defmodule Subscriber do
-  defstruct name: nil, number: nil, cpf: nil, plan: nil
+  defstruct name: nil, number: nil, cpf: nil, plan: nil, calls: []
 
   @subscriber %{:prepaid => "prepaid.txt", :postpaid => "postpaid.txt"}
 
@@ -10,6 +10,7 @@ defmodule Subscriber do
     case search_subscriber(number) do
       nil ->
         subscriber = %__MODULE__{name: name, number: number, cpf: cpf, plan: plan}
+
         (read(get_plan(subscriber)) ++ [subscriber])
         |> :erlang.term_to_binary()
         |> write(get_plan(subscriber))
@@ -37,11 +38,35 @@ defmodule Subscriber do
     {subscriber_deleted, "#{subscriber.name} subscriber successfully deleted!"}
   end
 
+  def update(number, subscriber) do
+    {old_subscriber, new_subscriber_list} = deletar_item(number)
+
+    case subscriber.plan.__struct__ == old_subscriber.plan.__struct__ do
+      true ->
+        (new_subscriber_list ++ [subscriber])
+        |> :erlang.term_to_binary()
+        |> write(get_plan(subscriber))
+
+      false ->
+        {:error, "subscriber cannot change the plan!"}
+    end
+  end
+
   def prepaid_subscribers, do: read(:prepaid)
 
   def postpaid_subscribers, do: read(:postpaid)
 
   def all_subscribers, do: read(:prepaid) ++ read(:postpaid)
+
+  defp deletar_item(number) do
+    subscriber = search_subscriber(number)
+
+    new_subscriber_list =
+      read(get_plan(subscriber.plan))
+      |> List.delete(subscriber)
+
+    {subscriber, new_subscriber_list}
+  end
 
   defp get_plan(subscriber) do
     case subscriber.plan.__struct__ == Prepaid do
