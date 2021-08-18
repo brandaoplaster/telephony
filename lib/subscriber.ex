@@ -27,15 +27,13 @@ defmodule Subscriber do
   end
 
   def delete(number) do
-    subscriber = search_subscriber(number)
+    {subscriber, new_subscriber_list} = deletar_item(number)
 
-    subscriber_deleted =
-      all_subscribers()
-      |> List.delete(subscriber)
-      |> :erlang.term_to_binary()
-      |> write(subscriber.plan)
+    new_subscriber_list
+    |> :erlang.term_to_binary()
+    |> write(subscriber.plan)
 
-    {subscriber_deleted, "#{subscriber.name} subscriber successfully deleted!"}
+    {:ok, "#{subscriber.name} subscriber successfully deleted!"}
   end
 
   def update(number, subscriber) do
@@ -62,7 +60,7 @@ defmodule Subscriber do
     subscriber = search_subscriber(number)
 
     new_subscriber_list =
-      read(get_plan(subscriber.plan))
+      read(get_plan(subscriber))
       |> List.delete(subscriber)
 
     {subscriber, new_subscriber_list}
