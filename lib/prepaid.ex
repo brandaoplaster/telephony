@@ -22,4 +22,8 @@ defmodule Prepaid do
         {:error, "You don't have credits to make this call, make a recharge!"}
     end
   end
+
+  def print_account(month, year, number) do
+    Accounts.print_out(month, year, number, :prepaid)
+  end
 end
