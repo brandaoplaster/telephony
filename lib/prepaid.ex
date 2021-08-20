@@ -14,7 +14,7 @@ defmodule Prepaid do
         plan = %__MODULE__{plan | credits: plan.credits - cost}
 
         %Subscriber{subscriber | plan: plan}
-        |> MakeCall.register(date, plan)
+        |> MakeCall.register(date, duration)
 
         {:ok, "Your call cost #{cost}, and you have #{plan.credits} credits"}
 
