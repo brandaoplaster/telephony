@@ -13,4 +13,13 @@ defmodule Telephony do
   def prepaid_subscriber_list, do: Subscriber.prepaid_subscribers()
 
   def postpaid_subscriber_list, do: Subscriber.postpaid_subscribers()
+
+  def make_call(number, plan, date, duration) do
+    cond do
+      plan == :prepaid -> Prepaid.make_call(number, date, duration)
+      plan == :postpaid -> Postpaid.make_call(number, date, duration)
+    end
+  end
+
+  def recharge(date, value, number), do: Recharge.call(date, value, number)
 end
