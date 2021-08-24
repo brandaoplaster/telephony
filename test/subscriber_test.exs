@@ -45,4 +45,22 @@ defmodule SubscriberTest do
       assert Subscriber.search_subscriber("0123", :postpaid).plan.__struct__ == Postpaid
     end
   end
+
+  describe "testing subscriber deletion" do
+    test "when to delete a prepaid subscriber" do
+      Subscriber.register("Brandao", "0012", "09876", :prepaid)
+      Subscriber.register("teste one delete", "0234", "08765", :prepaid)
+
+      expected_response = {:ok, "Brandao subscriber successfully deleted!"}
+      assert Subscriber.delete("0012") == expected_response
+    end
+
+    test "when to delete a postpaid subscriber" do
+      Subscriber.register("Brandao", "0012", "09876", :postpaid)
+      Subscriber.register("teste tow delete", "0234", "08765", :postpaid)
+
+      expected_response = {:ok, "Brandao subscriber successfully deleted!"}
+      assert Subscriber.delete("0012") == expected_response
+    end
+  end
 end
