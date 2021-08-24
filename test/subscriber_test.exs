@@ -31,4 +31,18 @@ defmodule SubscriberTest do
           "Brandao"
     end
   end
+
+  describe "test to search subscriber" do
+    test "When to look for a prepaid subscriber" do
+      Subscriber.register("Brandao", "0123", "09876", :prepaid)
+      assert Subscriber.search_subscriber("0123", :prepaid).name == "Brandao"
+      assert Subscriber.search_subscriber("0123", :prepaid).plan.__struct__ == Prepaid
+    end
+
+    test "When to look for a postpaid subscriber" do
+      Subscriber.register("Brandao", "0123", "09876", :postpaid)
+      assert Subscriber.search_subscriber("0123", :postpaid).name == "Brandao"
+      assert Subscriber.search_subscriber("0123", :postpaid).plan.__struct__ == Postpaid
+    end
+  end
 end
