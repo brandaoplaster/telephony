@@ -82,7 +82,7 @@ defmodule Subscriber do
   defp subscribers_filter(list, number), do: Enum.find(list, &(&1.number == number))
 
   defp write(subscriber_list, plan) do
-    File.write(@subscriber[plan], subscriber_list)
+    File.write!(@subscriber[plan], subscriber_list)
   end
 
   defp read(plan) do
