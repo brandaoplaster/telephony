@@ -7,6 +7,6 @@ defmodule MakeCall do
       subscriber | calls: subscriber.calls ++ [%__MODULE__{date: date, duration: duration}]
     }
 
-    subscriber = Subscriber.update(subscriber.number, subscriber_updated)
+    Subscriber.update(subscriber.number, subscriber_updated)
   end
 end
